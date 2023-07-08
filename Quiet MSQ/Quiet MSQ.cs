@@ -2,7 +2,6 @@
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.Config;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 
 namespace Quiet_MSQ;
@@ -34,10 +33,10 @@ public class QuietMsq : IDalamudPlugin
     {
         if (flag is not (ConditionFlag.WatchingCutscene or ConditionFlag.OccupiedInCutSceneEvent
             or ConditionFlag.WatchingCutscene78)) return;
-        PluginLog.Debug(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
+        // PluginLog.Debug(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
 
         var zone = ClientState.TerritoryType;
-        PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
+        // PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
         // Castrum = 1043 // Praetoritum = 1044 // Porta Decumana = 1052
         if (zone is not (1043 or 1044 or 1052)) return;
 
