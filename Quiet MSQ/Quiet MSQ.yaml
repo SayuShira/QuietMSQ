@@ -1,0 +1,10 @@
+name: Quiet MSQ
+author: SayuShira
+punchline: At least be silent!
+description: |-
+  You don't mind the MSQ roulette but would like to enjoy your on-the-side stream without game sounds?
+  This plugin mutes the cutscenes and restores sound once they end.
+tags:
+  - Cutscenes
+  - Roulette
+  - QoL
