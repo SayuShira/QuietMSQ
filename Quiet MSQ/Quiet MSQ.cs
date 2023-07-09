@@ -2,6 +2,7 @@
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.Config;
 using Dalamud.IoC;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 
 namespace Quiet_MSQ;
@@ -14,6 +15,9 @@ public class QuietMsq : IDalamudPlugin
     private GameConfig GameConfig { get; }
     private ClientState ClientState { get; }
     private Condition PlayerState { get; }
+
+    private bool _previousState;
+
 
     public QuietMsq(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -33,19 +37,24 @@ public class QuietMsq : IDalamudPlugin
     {
         if (flag is not (ConditionFlag.WatchingCutscene or ConditionFlag.OccupiedInCutSceneEvent
             or ConditionFlag.WatchingCutscene78)) return;
-        // PluginLog.Debug(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
+        PluginLog.Debug(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
 
         var zone = ClientState.TerritoryType;
-        // PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
+        PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
         // Castrum = 1043 // Praetoritum = 1044 // Porta Decumana = 1052
         if (zone is not (1043 or 1044 or 1052)) return;
 
-        GameConfig.System.TryGet("IsSndMaster", out bool previousState);
-        GameConfig.System.Set("IsSndMaster", !inCutscene && previousState);
+        // Get the previous state as we transition into a cutscene (otherwise will be overwritten)
+        if (inCutscene) GameConfig.System.TryGet("IsSndMaster", out _previousState);
+
+        PluginLog.Debug($"The state of master volume will be returned to {_previousState}");
+        PluginLog.Debug($"Setting master volume to {inCutscene || _previousState}");
+
+        GameConfig.System.Set("IsSndMaster", inCutscene || _previousState);
     }
 
     public void Dispose()
     {
-        // nothing to dispose
+        PlayerState.ConditionChange -= OnConditionChange;
     }
 }
