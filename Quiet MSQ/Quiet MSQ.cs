@@ -4,6 +4,7 @@ using Dalamud.Game.Config;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Quiet_MSQ;
 
@@ -51,6 +52,15 @@ public class QuietMsq : IDalamudPlugin
         PluginLog.Debug($"Setting master volume to {inCutscene || _previousState}");
 
         GameConfig.System.Set("IsSndMaster", inCutscene || _previousState);
+
+
+        // Candidates: 9u, 14u, 15u, 18u, 20u (Sell sound), 33u (photo), 34u, 35u (chat open), 36u (nice and clear), 37u (whisper)
+        // 38u (nice and clear), 42u (jungle drum), 43u (nice and clear), 60u (enemy target sound), 62 (delayed, clear)
+        // 79u (nice and clear)
+        // Be careful: 19u, 21u, 74(?`this stops after a bit)
+
+        // Play a sound if the cutscene is over
+        if (!inCutscene) UIModule.PlaySound(79u, 0, 0, 0);
     }
 
     public void Dispose()
