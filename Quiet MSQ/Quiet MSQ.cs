@@ -41,8 +41,8 @@ public class QuietMsq : IDalamudPlugin
 
         var zone = ClientState.TerritoryType;
         PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
-        // Castrum = 1043 // Praetoritum = 1044 // Porta Decumana = 1052
-        if (zone is not (1043 or 1044 or 1052)) return;
+        // Castrum = 1043 // Praetoritum = 1044 // Porta Decumana = 1048
+        if (zone is not (1043 or 1044 or 1048)) return;
 
         // Get the previous state as we transition into a cutscene (otherwise will be overwritten)
         if (inCutscene) GameConfig.System.TryGet("IsSndMaster", out _previousState);
