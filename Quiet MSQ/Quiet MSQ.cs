@@ -1,9 +1,7 @@
-﻿using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.Config;
+﻿using Dalamud.Game.ClientState.Conditions;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Quiet_MSQ;
@@ -13,23 +11,26 @@ public class QuietMsq : IDalamudPlugin
     public string Name => "Quiet MSQ";
 
     private DalamudPluginInterface PluginInterface { get; init; }
-    private GameConfig GameConfig { get; }
-    private ClientState ClientState { get; }
-    private Condition PlayerState { get; }
+    private IGameConfig GameConfig { get; }
+    private IClientState ClientState { get; }
+    private ICondition PlayerState { get; }
+    private IPluginLog PluginLog { get; }
 
     private bool _previousState;
 
 
     public QuietMsq(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] GameConfig gameConfig,
-        [RequiredVersion("1.0")] ClientState clientState,
-        [RequiredVersion("1.0")] Condition playerState)
+        [RequiredVersion("1.0")] IGameConfig gameConfig,
+        [RequiredVersion("1.0")] IClientState clientState,
+        [RequiredVersion("1.0")] ICondition playerState,
+        [RequiredVersion("1.0")] IPluginLog pluginLog)
     {
         PluginInterface = pluginInterface;
         GameConfig = gameConfig;
         ClientState = clientState;
         PlayerState = playerState;
+        PluginLog = pluginLog;
 
         PlayerState.ConditionChange += OnConditionChange;
     }
