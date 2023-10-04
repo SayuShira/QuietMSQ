@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
-using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -20,11 +19,11 @@ public class QuietMsq : IDalamudPlugin
 
 
     public QuietMsq(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] IGameConfig gameConfig,
-        [RequiredVersion("1.0")] IClientState clientState,
-        [RequiredVersion("1.0")] ICondition playerState,
-        [RequiredVersion("1.0")] IPluginLog pluginLog)
+        DalamudPluginInterface pluginInterface,
+        IGameConfig gameConfig,
+        IClientState clientState,
+        ICondition playerState,
+        IPluginLog pluginLog)
     {
         PluginInterface = pluginInterface;
         GameConfig = gameConfig;
