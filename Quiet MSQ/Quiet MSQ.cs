@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState.Conditions;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -9,28 +10,17 @@ public class QuietMsq : IDalamudPlugin
 {
     public string Name => "Quiet MSQ";
 
-    private DalamudPluginInterface PluginInterface { get; init; }
-    private IGameConfig GameConfig { get; }
-    private IClientState ClientState { get; }
-    private ICondition PlayerState { get; }
-    private IPluginLog PluginLog { get; }
+    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+    [PluginService] private static IGameConfig GameConfig { get; set; } = null!;
+    [PluginService] private static IClientState ClientState { get; set; } = null!;
+    [PluginService] private static ICondition PlayerState { get; set; } = null!;
+    [PluginService] private static IPluginLog PluginLog { get; set; } = null!;
 
     private bool _previousState;
 
 
-    public QuietMsq(
-        DalamudPluginInterface pluginInterface,
-        IGameConfig gameConfig,
-        IClientState clientState,
-        ICondition playerState,
-        IPluginLog pluginLog)
+    public QuietMsq()
     {
-        PluginInterface = pluginInterface;
-        GameConfig = gameConfig;
-        ClientState = clientState;
-        PlayerState = playerState;
-        PluginLog = pluginLog;
-
         PlayerState.ConditionChange += OnConditionChange;
     }
 
@@ -38,17 +28,17 @@ public class QuietMsq : IDalamudPlugin
     {
         if (flag is not (ConditionFlag.WatchingCutscene or ConditionFlag.OccupiedInCutSceneEvent
             or ConditionFlag.WatchingCutscene78)) return;
-        PluginLog.Debug(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
+        PluginLog.Verbose(inCutscene ? $"Cutscene is playing." : $"Cutscene is over.");
 
         var zone = ClientState.TerritoryType;
-        PluginLog.Debug($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
+        PluginLog.Verbose($"Am I in a MSQ Roulette Zone? {zone.ToString()}");
         // Castrum = 1043 // Praetoritum = 1044 // Porta Decumana = 1048
         if (zone is not (1043 or 1044 or 1048)) return;
 
         // Get the previous state as we transition into a cutscene (otherwise will be overwritten)
         if (inCutscene) GameConfig.System.TryGet("IsSndMaster", out _previousState);
 
-        PluginLog.Debug($"The state of master volume will be returned to {_previousState}");
+        PluginLog.Verbose($"The state of master volume will be returned to {_previousState}");
         PluginLog.Debug($"Setting master volume to {inCutscene || _previousState}");
 
         GameConfig.System.Set("IsSndMaster", inCutscene || _previousState);
