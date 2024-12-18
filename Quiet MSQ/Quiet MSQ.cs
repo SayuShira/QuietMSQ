@@ -50,7 +50,7 @@ public class QuietMsq : IDalamudPlugin
         // Be careful: 19u, 21u, 74(?`this stops after a bit)
 
         // Play a sound if the cutscene is over
-        if (!inCutscene) UIModule.PlaySound(79u, 0, 0, 0);
+        if (!inCutscene) UIGlobals.PlaySoundEffect(79u, 0, 0, 0);
     }
 
     public void Dispose()
